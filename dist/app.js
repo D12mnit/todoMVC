@@ -6,8 +6,8 @@ webpackJsonp([0],{
 	/*
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 14:00:32
-	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-12 14:28:00
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-12T16:17:59+08:00
 	 */
 	'use strict';
 
@@ -23,9 +23,7 @@ webpackJsonp([0],{
 	    displayName: 'TodoApp',
 
 	    getInitialState: function () {
-	        return {
-	            newTodo: ''
-	        };
+	        return { newTodo: '' };
 	    },
 	    handleChange: function (event) {
 	        this.setState({ newTodo: event.target.value });
@@ -55,12 +53,7 @@ webpackJsonp([0],{
 	        var todos = this.props.model.todos;
 
 	        var todoItems = todos.map(function (todo) {
-	            return React.createElement(TodoItem, {
-	                todo: todo,
-	                key: todo.id,
-	                onToggle: this.toggle.bind(this, todo),
-	                onDestroy: this.destroy.bind(this, todo)
-	            });
+	            return React.createElement(TodoItem, { todo: todo, key: todo.id, onToggle: this.toggle.bind(this, todo), onDestroy: this.destroy.bind(this, todo) });
 	        }, this);
 	        var completeItemNum = todos.reduce(function (i, todo) {
 	            return todo.isComplete ? i : i + 1;
@@ -69,12 +62,7 @@ webpackJsonp([0],{
 	            main = React.createElement(
 	                'section',
 	                { className: 'main' },
-	                React.createElement('input', {
-	                    className: 'toggle-all',
-	                    type: 'checkbox',
-	                    onChange: this.toggleAll,
-	                    checked: completeItemNum === 0
-	                }),
+	                React.createElement('input', { className: 'toggle-all', type: 'checkbox', onChange: this.toggleAll, checked: completeItemNum === 0 }),
 	                React.createElement(
 	                    'ul',
 	                    { className: 'todo-list' },
@@ -93,14 +81,7 @@ webpackJsonp([0],{
 	                    null,
 	                    'Todos'
 	                ),
-	                React.createElement('input', {
-	                    className: 'new-todo',
-	                    placeholder: 'What needs to be done?',
-	                    value: this.state.newTodo,
-	                    onChange: this.handleChange,
-	                    onKeyDown: this.handleSubmit,
-	                    autoFocus: true
-	                })
+	                React.createElement('input', { className: 'new-todo', placeholder: 'What needs to be done?', value: this.state.newTodo, onChange: this.handleChange, onKeyDown: this.handleSubmit, autoFocus: true })
 	            ),
 	            main,
 	            footer
@@ -122,7 +103,7 @@ webpackJsonp([0],{
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 16:10:48
 	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-12 14:28:04
+	 * @Last Modified time: 2016-05-12 16:45:22
 	 */
 	(function () {
 	    'use strict';
@@ -166,6 +147,12 @@ webpackJsonp([0],{
 	    TodoModel.prototype.destroy = function (item) {
 	        this.todos = this.todos.filter(function (todo) {
 	            return todo !== item;
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.update = function (item, text) {
+	        this.todos = this.todos.map(function (todo) {
+	            return todo !== item ? todo : Utils.extends({}, todo, { title: text });
 	        });
 	        this.save();
 	    };
@@ -234,8 +221,8 @@ webpackJsonp([0],{
 	/*
 	* @Author: d12mnit
 	* @Date:   2016-05-12 09:08:54
-	* @Last Modified by:   d12mnit
-	* @Last Modified time: 2016-05-12 15:48:38
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-12T16:36:49+08:00
 	*/
 	(function () {
 	    'use strict';
@@ -248,6 +235,13 @@ webpackJsonp([0],{
 	    var TodoItem = React.createClass({
 	        displayName: 'TodoItem',
 
+	        getInitialState: function () {
+	            return { editText: this.props.todo.title };
+	        },
+	        handleEdit: function (event) {
+	            this.props.onEdit();
+	            this.setState({ editText: event.target.value });
+	        },
 	        render: function () {
 	            return React.createElement(
 	                'li',
@@ -255,22 +249,15 @@ webpackJsonp([0],{
 	                React.createElement(
 	                    'div',
 	                    { className: 'view' },
-	                    React.createElement('input', {
-	                        className: 'toggle',
-	                        type: 'checkbox',
-	                        checked: this.props.todo.isComplete,
-	                        onChange: this.props.onToggle
-	                    }),
+	                    React.createElement('input', { className: 'toggle', type: 'checkbox', checked: this.props.todo.isComplete, onChange: this.props.onToggle }),
 	                    React.createElement(
 	                        'label',
-	                        null,
+	                        { onDoubleClick: this.handleEdit },
 	                        this.props.todo.title
 	                    ),
 	                    React.createElement('button', { className: 'destroy', onClick: this.props.onDestroy })
 	                ),
-	                React.createElement('input', {
-	                    className: 'edit'
-	                })
+	                React.createElement('input', { className: 'edit', value: this.state.editText, onChange: this.props })
 	            );
 	        }
 	    });

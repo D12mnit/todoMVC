@@ -2,7 +2,7 @@
  * @Author: d12mnit
  * @Date:   2016-05-11 16:10:48
  * @Last Modified by:   d12mnit
- * @Last Modified time: 2016-05-12 14:28:04
+ * @Last Modified time: 2016-05-12 16:45:22
  */
 (function() {
     'use strict';
@@ -45,6 +45,12 @@
     TodoModel.prototype.destroy = function(item) {
         this.todos = this.todos.filter(function(todo) {
             return todo !== item;
+        });
+        this.save();
+    };
+    TodoModel.prototype.update = function(item,text) {
+        this.todos = this.todos.map(function(todo){
+            return todo !== item ? todo : Utils.extends({},todo,{title: text});
         });
         this.save();
     };

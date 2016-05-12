@@ -150,3 +150,6 @@ input[type="checkbox"]{
 .todo-list li:hover .destroy{
   display: block;
 }
+.edit{
+    display: block;
+}
