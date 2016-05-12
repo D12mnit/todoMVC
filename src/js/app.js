@@ -2,12 +2,13 @@
  * @Author: d12mnit
  * @Date:   2016-05-11 14:00:32
  * @Last Modified by:   d12mnit
- * @Last Modified time: 2016-05-11 20:40:35
+ * @Last Modified time: 2016-05-12 09:25:48
  */
 'use strict';
 var React = require('react');
 var ReactDOM = require('react-dom');
 var TodoModel = require('./todoModel.js');
+var TodoItem = require('./todoItem.js');
 
 var ENTER_KEY = 13;
 
@@ -36,9 +37,22 @@ var TodoApp = React.createClass({
         var footer;
         var todos = this.props.model.todos;
 
-        main = (
-            <TodoItem list={todos}/>
-        );
+        var todoItems = todos.map(function(todo){
+            return <TodoItem todo={todo} />
+        });
+        if(todos.length){
+            main = (
+                <section className="main">
+                    <input
+                        className="toggle-all"
+                        type="checkbox"
+                    />
+                    <ul className="todo-list">
+                        {todoItems}
+                    </ul>
+                </section>
+            )
+        };
         return (
             <div>
                 <header className="header">

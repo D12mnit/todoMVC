@@ -7,13 +7,14 @@ webpackJsonp([0],{
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 14:00:32
 	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-11 20:40:35
+	 * @Last Modified time: 2016-05-12 09:25:48
 	 */
 	'use strict';
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(33);
 	var TodoModel = __webpack_require__(168);
+	var TodoItem = __webpack_require__(170);
 
 	var ENTER_KEY = 13;
 
@@ -43,7 +44,24 @@ webpackJsonp([0],{
 	        var footer;
 	        var todos = this.props.model.todos;
 
-	        main = React.createElement(TodoItem, { list: todos });
+	        var todoItems = todos.map(function (todo) {
+	            return React.createElement(TodoItem, { todo: todo });
+	        });
+	        if (todos.length) {
+	            main = React.createElement(
+	                'section',
+	                { className: 'main' },
+	                React.createElement('input', {
+	                    className: 'toggle-all',
+	                    type: 'checkbox'
+	                }),
+	                React.createElement(
+	                    'ul',
+	                    { className: 'todo-list' },
+	                    todoItems
+	                )
+	            );
+	        };
 	        return React.createElement(
 	            'div',
 	            null,
@@ -169,6 +187,56 @@ webpackJsonp([0],{
 	        }
 	    };
 	    module.exports = Utils;
+	})();
+
+/***/ },
+
+/***/ 170:
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+	* @Author: d12mnit
+	* @Date:   2016-05-12 09:08:54
+	* @Last Modified by:   d12mnit
+	* @Last Modified time: 2016-05-12 09:20:52
+	*/
+	(function () {
+	    'use strict';
+
+	    var React = __webpack_require__(1);
+	    var ReactDOM = __webpack_require__(33);
+
+	    var Utils = __webpack_require__(169);
+
+	    var TodoItem = React.createClass({
+	        displayName: 'TodoItem',
+
+	        render: function () {
+	            return React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    'div',
+	                    { className: 'view' },
+	                    React.createElement('input', {
+	                        className: 'toggle',
+	                        type: 'checkbox'
+	                    }),
+	                    React.createElement(
+	                        'label',
+	                        null,
+	                        this.props.todo.title
+	                    ),
+	                    React.createElement('button', { className: 'destory' })
+	                ),
+	                React.createElement('input', {
+	                    className: 'edit'
+	                })
+	            );
+	        }
+	    });
+
+	    module.exports = TodoItem;
 	})();
 
 /***/ }
