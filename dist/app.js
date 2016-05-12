@@ -7,7 +7,7 @@ webpackJsonp([0],{
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 14:00:32
 	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-12 09:25:48
+	 * @Last Modified time: 2016-05-12 14:28:00
 	 */
 	'use strict';
 
@@ -39,21 +39,41 @@ webpackJsonp([0],{
 	            this.setState({ newTodo: '' });
 	        }
 	    },
+	    toggleAll: function (event) {
+	        var checked = event.target.checked;
+	        this.props.model.toggleAll(checked);
+	    },
+	    toggle: function (todo) {
+	        this.props.model.toggle(todo);
+	    },
+	    destroy: function (todo) {
+	        this.props.model.destroy(todo);
+	    },
 	    render: function () {
 	        var main;
 	        var footer;
 	        var todos = this.props.model.todos;
 
 	        var todoItems = todos.map(function (todo) {
-	            return React.createElement(TodoItem, { todo: todo });
-	        });
+	            return React.createElement(TodoItem, {
+	                todo: todo,
+	                key: todo.id,
+	                onToggle: this.toggle.bind(this, todo),
+	                onDestroy: this.destroy.bind(this, todo)
+	            });
+	        }, this);
+	        var completeItemNum = todos.reduce(function (i, todo) {
+	            return todo.isComplete ? i : i + 1;
+	        }, 0);
 	        if (todos.length) {
 	            main = React.createElement(
 	                'section',
 	                { className: 'main' },
 	                React.createElement('input', {
 	                    className: 'toggle-all',
-	                    type: 'checkbox'
+	                    type: 'checkbox',
+	                    onChange: this.toggleAll,
+	                    checked: completeItemNum === 0
 	                }),
 	                React.createElement(
 	                    'ul',
@@ -102,7 +122,7 @@ webpackJsonp([0],{
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 16:10:48
 	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-11 20:16:08
+	 * @Last Modified time: 2016-05-12 14:28:04
 	 */
 	(function () {
 	    'use strict';
@@ -131,7 +151,24 @@ webpackJsonp([0],{
 	        });
 	        this.save();
 	    };
-
+	    TodoModel.prototype.toggleAll = function (checked) {
+	        this.todos = this.todos.map(function (todo) {
+	            return Utils.extends({}, todo, { isComplete: checked });
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.toggle = function (item) {
+	        this.todos = this.todos.map(function (todo) {
+	            return todo !== item ? todo : Utils.extends({}, todo, { isComplete: !todo.isComplete });
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.destroy = function (item) {
+	        this.todos = this.todos.filter(function (todo) {
+	            return todo !== item;
+	        });
+	        this.save();
+	    };
 	    module.exports = TodoModel;
 	})();
 
@@ -198,7 +235,7 @@ webpackJsonp([0],{
 	* @Author: d12mnit
 	* @Date:   2016-05-12 09:08:54
 	* @Last Modified by:   d12mnit
-	* @Last Modified time: 2016-05-12 09:20:52
+	* @Last Modified time: 2016-05-12 15:48:38
 	*/
 	(function () {
 	    'use strict';
@@ -220,14 +257,16 @@ webpackJsonp([0],{
 	                    { className: 'view' },
 	                    React.createElement('input', {
 	                        className: 'toggle',
-	                        type: 'checkbox'
+	                        type: 'checkbox',
+	                        checked: this.props.todo.isComplete,
+	                        onChange: this.props.onToggle
 	                    }),
 	                    React.createElement(
 	                        'label',
 	                        null,
 	                        this.props.todo.title
 	                    ),
-	                    React.createElement('button', { className: 'destory' })
+	                    React.createElement('button', { className: 'destroy', onClick: this.props.onDestroy })
 	                ),
 	                React.createElement('input', {
 	                    className: 'edit'

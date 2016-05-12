@@ -2,7 +2,7 @@
  * @Author: d12mnit
  * @Date:   2016-05-11 16:10:48
  * @Last Modified by:   d12mnit
- * @Last Modified time: 2016-05-11 20:16:08
+ * @Last Modified time: 2016-05-12 14:28:04
  */
 (function() {
     'use strict';
@@ -30,7 +30,24 @@
         });
         this.save();
     };
-
+    TodoModel.prototype.toggleAll = function(checked) {
+        this.todos = this.todos.map(function(todo){
+            return Utils.extends({},todo,{isComplete: checked});
+        });
+        this.save();
+    };
+    TodoModel.prototype.toggle = function(item) {
+        this.todos = this.todos.map(function(todo){
+            return (todo !== item) ? todo : Utils.extends({},todo, {isComplete: !todo.isComplete});
+        });
+        this.save();
+    };
+    TodoModel.prototype.destroy = function(item) {
+        this.todos = this.todos.filter(function(todo) {
+            return todo !== item;
+        });
+        this.save();
+    };
     module.exports = TodoModel;
 }())
 
