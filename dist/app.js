@@ -7,12 +7,17 @@ webpackJsonp([0],{
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 14:00:32
 	* @Last modified by:   d12mnit
-	* @Last modified time: 2016-05-12T16:17:59+08:00
+	* @Last modified time: 2016-05-12T17:58:43+08:00
 	 */
 	'use strict';
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(33);
+
+	var ALL_TODOS = 'all',
+	    ACTIVE_TODOS = 'active',
+	    COMPLETED_TODOS = 'completed';
+
 	var TodoModel = __webpack_require__(168);
 	var TodoItem = __webpack_require__(170);
 
@@ -23,8 +28,13 @@ webpackJsonp([0],{
 	    displayName: 'TodoApp',
 
 	    getInitialState: function () {
-	        return { newTodo: '' };
+	        return {
+	            newTodo: '',
+	            nowShowing: 'ALL_TODOS',
+	            editing: null
+	        };
 	    },
+	    componentDidMount: function () {},
 	    handleChange: function (event) {
 	        this.setState({ newTodo: event.target.value });
 	    },
@@ -47,13 +57,20 @@ webpackJsonp([0],{
 	    destroy: function (todo) {
 	        this.props.model.destroy(todo);
 	    },
+	    edit: function (todo) {
+	        this.setState({ editing: todo.id });
+	    },
+	    save: function (todo, val) {
+	        this.props.model.update(todo, val);
+	        this.setState({ editing: null });
+	    },
 	    render: function () {
 	        var main;
 	        var footer;
 	        var todos = this.props.model.todos;
 
 	        var todoItems = todos.map(function (todo) {
-	            return React.createElement(TodoItem, { todo: todo, key: todo.id, onToggle: this.toggle.bind(this, todo), onDestroy: this.destroy.bind(this, todo) });
+	            return React.createElement(TodoItem, { todo: todo, key: todo.id, onToggle: this.toggle.bind(this, todo), onDestroy: this.destroy.bind(this, todo), onSave: this.save.bind(this, todo), onEdit: this.edit.bind(this, todo), editing: this.state.editing !== null });
 	        }, this);
 	        var completeItemNum = todos.reduce(function (i, todo) {
 	            return todo.isComplete ? i : i + 1;
@@ -102,8 +119,8 @@ webpackJsonp([0],{
 	/*
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 16:10:48
-	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-12 16:45:22
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-12T17:08:49+08:00
 	 */
 	(function () {
 	    'use strict';
@@ -222,7 +239,7 @@ webpackJsonp([0],{
 	* @Author: d12mnit
 	* @Date:   2016-05-12 09:08:54
 	* @Last modified by:   d12mnit
-	* @Last modified time: 2016-05-12T16:36:49+08:00
+	* @Last modified time: 2016-05-12T17:57:46+08:00
 	*/
 	(function () {
 	    'use strict';
@@ -240,7 +257,20 @@ webpackJsonp([0],{
 	        },
 	        handleEdit: function (event) {
 	            this.props.onEdit();
-	            this.setState({ editText: event.target.value });
+	            this.setState({ editText: this.props.todo.title });
+	        },
+	        handleChange: function (event) {
+	            if (this.props.editing) {
+	                this.setState({ editText: event.target.value });
+	            }
+	        },
+	        handleSubmit: function () {
+	            var val = this.state.editText.trim();
+	            if (val) {
+	                this.props.onSave(val);
+	            } else {
+	                this.props.onDestroy();
+	            }
 	        },
 	        render: function () {
 	            return React.createElement(
@@ -257,7 +287,7 @@ webpackJsonp([0],{
 	                    ),
 	                    React.createElement('button', { className: 'destroy', onClick: this.props.onDestroy })
 	                ),
-	                React.createElement('input', { className: 'edit', value: this.state.editText, onChange: this.props })
+	                React.createElement('input', { className: 'edit', value: this.state.editText, onChange: this.handleChange, onBlur: this.handleSubmit })
 	            );
 	        }
 	    });

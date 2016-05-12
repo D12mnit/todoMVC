@@ -1,8 +1,8 @@
 /*
  * @Author: d12mnit
  * @Date:   2016-05-11 16:10:48
- * @Last Modified by:   d12mnit
- * @Last Modified time: 2016-05-12 16:45:22
+* @Last modified by:   d12mnit
+* @Last modified time: 2016-05-12T17:08:49+08:00
  */
 (function() {
     'use strict';
@@ -56,4 +56,3 @@
     };
     module.exports = TodoModel;
 }())
-

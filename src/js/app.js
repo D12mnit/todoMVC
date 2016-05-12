@@ -2,11 +2,16 @@
  * @Author: d12mnit
  * @Date:   2016-05-11 14:00:32
 * @Last modified by:   d12mnit
-* @Last modified time: 2016-05-12T16:17:59+08:00
+* @Last modified time: 2016-05-12T17:58:43+08:00
  */
 'use strict';
 var React = require('react');
 var ReactDOM = require('react-dom');
+
+var ALL_TODOS = 'all',
+    ACTIVE_TODOS = 'active',
+    COMPLETED_TODOS = 'completed';
+
 var TodoModel = require('./todoModel.js');
 var TodoItem = require('./todoItem.js');
 
@@ -15,7 +20,14 @@ var ENTER_KEY = 13;
 var todos = new TodoModel('todo-react');
 var TodoApp = React.createClass({
     getInitialState: function() {
-        return {newTodo: ''}
+        return {
+            newTodo: '',
+            nowShowing: 'ALL_TODOS',
+            editing: null
+        }
+    },
+    componentDidMount: function() {
+
     },
     handleChange: function(event) {
         this.setState({newTodo: event.target.value});
@@ -40,13 +52,20 @@ var TodoApp = React.createClass({
     destroy: function(todo) {
         this.props.model.destroy(todo);
     },
+    edit: function(todo) {
+        this.setState({editing: todo.id});
+    },
+    save: function(todo, val) {
+        this.props.model.update(todo, val);
+        this.setState({editing: null});
+    },
     render: function() {
         var main;
         var footer;
         var todos = this.props.model.todos;
 
         var todoItems = todos.map(function(todo) {
-            return (<TodoItem todo={todo} key={todo.id} onToggle={this.toggle.bind(this, todo)} onDestroy={this.destroy.bind(this, todo)}/>)
+            return (<TodoItem todo={todo} key={todo.id} onToggle={this.toggle.bind(this, todo)} onDestroy={this.destroy.bind(this, todo)} onSave={this.save.bind(this, todo)} onEdit={this.edit.bind(this,todo)} editing={this.state.editing !== null}/>)
         }, this);
         var completeItemNum = todos.reduce(function(i, todo) {
             return todo.isComplete
