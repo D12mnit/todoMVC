@@ -3,8 +3,13 @@ html{
 }
 body{
   font-size: 1.6rem;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   color: #333;
   background-color: #fcfcfc;
+}
+a{
+    text-decoration: none;
+    color: #a4a4a4;
 }
 #app-wrap{
   margin: 150px auto 0;
@@ -36,6 +41,7 @@ header h1{
   position: relative;
   width: 100%;
   font-size: 2.4rem;
+  font-weight: 300;
   line-height: 1;
   padding: 16px 16px 16px 60px;
   outline: none;
@@ -63,7 +69,7 @@ header h1{
   -webkit-appearance: none;
   appearance: none;
 }
-input[type="checkbox"]{
+input[type="checkbox"],input[type="text"]{
   outline: none;
 }
 .toggle-all:before{
@@ -82,9 +88,6 @@ input[type="checkbox"]{
   position: relative;
   font-size: 2.4rem;
   border-bottom: 1px solid #ededed;
-}
-.edit{
-  display: none;
 }
 .toggle,.destory{
   position: absolute;
@@ -114,6 +117,7 @@ input[type="checkbox"]{
 .todo-list li label{
   display: block;
   line-height: 1.2;
+  font-weight: 300;
   margin-left: 44px;
   padding: 15px 60px 16px 16px;
   -webkit-transition: color .2s;
@@ -151,5 +155,63 @@ input[type="checkbox"]{
   display: block;
 }
 .edit{
+    display: none;
+    position: absolute;
+    top: -1px;
+    margin-left: 44px;
+    width: 506px;
+    height: 61px;
+    padding: 15px 60px 16px 16px;
+    border: 1px solid #999;
+    font-size: 2.4rem;
+    font-weight: 300;
+    line-height: 1.2;
+    -webkit-box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.todo-list li.editing .edit{
     display: block;
+}
+.footer{
+    position: relative;
+    font-size: 1.4rem;
+}
+.footer .todo-count{
+    line-height: 30px;
+    padding-left: 10px;
+    color: #a4a4a4;
+}
+.footer .filters{
+    position: absolute;
+    width: 100%;
+    top: 5px;
+    text-align: center;
+}
+.footer .filters li{
+    display: inline;
+    margin: 0 5px;
+}
+.footer .filters li a{
+    display: inline-block;
+    padding: 2px 6px;
+}
+.footer .filters li.selected{
+    border: 1px solid rgba(187,25,25,.4);
+    border-radius: 3px;
+}
+.clear-btn{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    border: none;
+    color: #a4a4a4;
+    background-color: #fff;
+    outline: none;
+}
+.clear-btn:hover{
+    text-decoration: underline;
+    color: #333;
 }

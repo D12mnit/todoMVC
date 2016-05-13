@@ -1,15 +1,16 @@
 /*
 * @Author: d12mnit
-* @Date:   2016-05-12 09:08:54
+* @Date:   2016-05-12 20:57:11
 * @Last modified by:   d12mnit
-* @Last modified time: 2016-05-12T17:57:46+08:00
+* @Last modified time: 2016-05-13T11:53:29+08:00
 */
 (function() {
     'use strict';
     var React = require('react');
     var ReactDOM = require('react-dom');
 
-    var Utils = require('./utils.js');
+    var ESCAPE_KEY = 27;
+    var ENTER_KEY = 13;
 
     var TodoItem = React.createClass({
         getInitialState: function(){
@@ -24,6 +25,14 @@
                 this.setState({editText: event.target.value})
             }
         },
+        handleKeyDown: function(event) {
+            if(event.keyCode === ESCAPE_KEY){
+                this.setState({editText: this.props.todo.title});
+                this.props.onCancel(event);
+            } else if(event.keyCode === ENTER_KEY){
+                this.handleSubmit(event);
+            }
+        },
         handleSubmit: function(){
             var val = this.state.editText.trim();
             if(val){
@@ -32,9 +41,16 @@
                 this.props.onDestroy();
             }
         },
+        componentDidUpdate: function(prevProps, prevState) {
+            if(!prevProps.editing && this.props.editing){
+                var node = ReactDOM.findDOMNode(this.refs.editbar);
+                node.focus();
+                node.setSelectionRange(node.value.length,node.value.length);
+            }
+        },
         render: function() {
             return (
-                <li>
+                <li className={this.props.editing ? "editing":""}>
                     <div className="view">
                         <input className="toggle" type="checkbox" checked={this.props.todo.isComplete} onChange={this.props.onToggle}/>
                         <label onDoubleClick={this.handleEdit}>
@@ -42,7 +58,7 @@
                         </label>
                         <button className="destroy" onClick={this.props.onDestroy}/>
                     </div>
-                    <input className="edit" value={this.state.editText} onChange={this.handleChange} onBlur={this.handleSubmit}/>
+                    <input ref="editbar" className="edit" type="text" value={this.state.editText} onChange={this.handleChange} onBlur={this.handleSubmit} onKeyDown={this.handleKeyDown}/>
                 </li>
             );
         }
