@@ -13,28 +13,28 @@ webpackJsonp([0],{
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(33);
-	var Router = __webpack_require__(172).Router;
+	var Router = __webpack_require__(168).Router;
 
 	var ALL_TODOS = 'all',
 	    ACTIVE_TODOS = 'active',
 	    COMPLETED_TODOS = 'completed';
 
-	var TodoModel = __webpack_require__(168);
-	var TodoItem = __webpack_require__(170);
-	var Footer = __webpack_require__(171);
+	var TodoModel = __webpack_require__(169);
+	var TodoItem = __webpack_require__(171);
+	var Footer = __webpack_require__(172);
 	var ENTER_KEY = 13;
 
 	var todos = new TodoModel('todo-react');
 	var TodoApp = React.createClass({
 	    displayName: 'TodoApp',
 
-	    getInitialState: function () {
+	    getInitialState: function getInitialState() {
 	        return { newTodo: '', nowShowing: 'ALL_TODOS', editing: null };
 	    },
-	    handleChange: function (event) {
+	    handleChange: function handleChange(event) {
 	        this.setState({ newTodo: event.target.value });
 	    },
-	    handleSubmit: function (event) {
+	    handleSubmit: function handleSubmit(event) {
 	        if (event.keyCode !== ENTER_KEY) return;
 	        event.preventDefault();
 	        var todoName = this.state.newTodo.trim();
@@ -43,30 +43,30 @@ webpackJsonp([0],{
 	            this.setState({ newTodo: '' });
 	        }
 	    },
-	    toggleAll: function (event) {
+	    toggleAll: function toggleAll(event) {
 	        var checked = event.target.checked;
 	        this.props.model.toggleAll(checked);
 	    },
-	    toggle: function (todo) {
+	    toggle: function toggle(todo) {
 	        this.props.model.toggle(todo);
 	    },
-	    destroy: function (todo) {
+	    destroy: function destroy(todo) {
 	        this.props.model.destroy(todo);
 	    },
-	    edit: function (todo) {
+	    edit: function edit(todo) {
 	        this.setState({ editing: todo.id });
 	    },
-	    save: function (todo, val) {
+	    save: function save(todo, val) {
 	        this.props.model.update(todo, val);
 	        this.setState({ editing: null });
 	    },
-	    cancel: function () {
+	    cancel: function cancel() {
 	        this.setState({ editing: null });
 	    },
-	    clear: function () {
+	    clear: function clear() {
 	        this.props.model.clear();
 	    },
-	    componentDidMount: function () {
+	    componentDidMount: function componentDidMount() {
 	        var setState = this.setState;
 	        var router = Router({
 	            '/': setState.bind(this, { nowShowing: ALL_TODOS }),
@@ -75,7 +75,7 @@ webpackJsonp([0],{
 	        });
 	        router.init('/');
 	    },
-	    render: function () {
+	    render: function render() {
 	        var main;
 	        var footer;
 	        var todos = this.props.model.todos;
@@ -143,295 +143,9 @@ webpackJsonp([0],{
 /***/ 168:
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-	 * @Author: d12mnit
-	 * @Date:   2016-05-11 16:10:48
-	* @Last modified by:   d12mnit
-	* @Last modified time: 2016-05-13T13:29:51+08:00
-	 */
-	(function () {
-	    'use strict';
+	'use strict';
 
-	    var Utils = __webpack_require__(169);
-
-	    var TodoModel = function (key) {
-	        this.key = key;
-	        this.todos = Utils.store(key);
-	        this.onChange = [];
-	    };
-	    TodoModel.prototype.subscribe = function (f) {
-	        this.onChange.push(f);
-	    };
-	    TodoModel.prototype.save = function () {
-	        Utils.store(this.key, this.todos);
-	        this.onChange.forEach(function (f) {
-	            f();
-	        });
-	    };
-	    TodoModel.prototype.addTodo = function (title) {
-	        this.todos = this.todos.concat({
-	            id: Utils.randomId(),
-	            title: title,
-	            isComplete: false
-	        });
-	        this.save();
-	    };
-	    TodoModel.prototype.toggleAll = function (checked) {
-	        this.todos = this.todos.map(function (todo) {
-	            return Utils.extends({}, todo, { isComplete: checked });
-	        });
-	        this.save();
-	    };
-	    TodoModel.prototype.toggle = function (item) {
-	        this.todos = this.todos.map(function (todo) {
-	            return todo !== item ? todo : Utils.extends({}, todo, { isComplete: !todo.isComplete });
-	        });
-	        this.save();
-	    };
-	    TodoModel.prototype.destroy = function (item) {
-	        this.todos = this.todos.filter(function (todo) {
-	            return todo !== item;
-	        });
-	        this.save();
-	    };
-	    TodoModel.prototype.update = function (item, text) {
-	        this.todos = this.todos.map(function (todo) {
-	            return todo !== item ? todo : Utils.extends({}, todo, { title: text });
-	        });
-	        this.save();
-	    };
-	    TodoModel.prototype.clear = function () {
-	        this.todos = this.todos.filter(function (todo) {
-	            return !todo.isComplete;
-	        });
-	        this.save();
-	    };
-	    module.exports = TodoModel;
-	})();
-
-/***/ },
-
-/***/ 169:
-/***/ function(module, exports) {
-
-	/*
-	 * @Author: d12mnit
-	 * @Date:   2016-05-11 15:37:27
-	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-11 19:56:43
-	 */
-	(function () {
-	    'use strict';
-
-	    var Utils = {
-	        randomId: function () {
-	            var random;
-	            var id = '';
-
-	            for (var i = 0; i < 32; i++) {
-	                random = Math.random() * 16 | 0;
-	                if (i === 8 || i === 12 || i === 16 || i === 20) {
-	                    id += '-';
-	                }
-	                id += (i === 12 ? 4 : i === 16 ? random & 3 | 8 : random).toString(16);
-	            }
-	            return id;
-	        },
-	        pluralize: function (count, word) {
-	            return count === 1 ? word : word + 's';
-	        },
-	        store: function (key, value) {
-	            if (value) {
-	                return localStorage.setItem(key, JSON.stringify(value));
-	            }
-	            var store = localStorage.getItem(key);
-	            return store && JSON.parse(store) || [];
-	        },
-	        extends: function () {
-	            var newObj = {};
-	            for (var i = 0; i < arguments.length; i++) {
-	                var obj = arguments[i];
-	                for (var key in obj) {
-	                    if (obj.hasOwnProperty(key)) {
-	                        newObj[key] = obj[key];
-	                    }
-	                }
-	            }
-	            return newObj;
-	        }
-	    };
-	    module.exports = Utils;
-	})();
-
-/***/ },
-
-/***/ 170:
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	* @Author: d12mnit
-	* @Date:   2016-05-12 20:57:11
-	* @Last modified by:   d12mnit
-	* @Last modified time: 2016-05-13T11:53:29+08:00
-	*/
-	(function () {
-	    'use strict';
-
-	    var React = __webpack_require__(1);
-	    var ReactDOM = __webpack_require__(33);
-
-	    var ESCAPE_KEY = 27;
-	    var ENTER_KEY = 13;
-
-	    var TodoItem = React.createClass({
-	        displayName: 'TodoItem',
-
-	        getInitialState: function () {
-	            return { editText: this.props.todo.title };
-	        },
-	        handleEdit: function (event) {
-	            this.props.onEdit();
-	            this.setState({ editText: this.props.todo.title });
-	        },
-	        handleChange: function (event) {
-	            if (this.props.editing) {
-	                this.setState({ editText: event.target.value });
-	            }
-	        },
-	        handleKeyDown: function (event) {
-	            if (event.keyCode === ESCAPE_KEY) {
-	                this.setState({ editText: this.props.todo.title });
-	                this.props.onCancel(event);
-	            } else if (event.keyCode === ENTER_KEY) {
-	                this.handleSubmit(event);
-	            }
-	        },
-	        handleSubmit: function () {
-	            var val = this.state.editText.trim();
-	            if (val) {
-	                this.props.onSave(val);
-	            } else {
-	                this.props.onDestroy();
-	            }
-	        },
-	        componentDidUpdate: function (prevProps, prevState) {
-	            if (!prevProps.editing && this.props.editing) {
-	                var node = ReactDOM.findDOMNode(this.refs.editbar);
-	                node.focus();
-	                node.setSelectionRange(node.value.length, node.value.length);
-	            }
-	        },
-	        render: function () {
-	            return React.createElement(
-	                'li',
-	                { className: this.props.editing ? "editing" : "" },
-	                React.createElement(
-	                    'div',
-	                    { className: 'view' },
-	                    React.createElement('input', { className: 'toggle', type: 'checkbox', checked: this.props.todo.isComplete, onChange: this.props.onToggle }),
-	                    React.createElement(
-	                        'label',
-	                        { onDoubleClick: this.handleEdit },
-	                        this.props.todo.title
-	                    ),
-	                    React.createElement('button', { className: 'destroy', onClick: this.props.onDestroy })
-	                ),
-	                React.createElement('input', { ref: 'editbar', className: 'edit', type: 'text', value: this.state.editText, onChange: this.handleChange, onBlur: this.handleSubmit, onKeyDown: this.handleKeyDown })
-	            );
-	        }
-	    });
-
-	    module.exports = TodoItem;
-	})();
-
-/***/ },
-
-/***/ 171:
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-	* @Author: d12mnit
-	* @Date:   2016-05-12 20:56:46
-	* @Last modified by:   d12mnit
-	* @Last modified time: 2016-05-13T13:34:06+08:00
-	*/
-	(function () {
-	    'use strict';
-
-	    var React = __webpack_require__(1);
-	    var ReactDOM = __webpack_require__(33);
-	    var Utils = __webpack_require__(169);
-	    var Footer = React.createClass({
-	        displayName: 'Footer',
-
-
-	        render: function () {
-	            var count = this.props.count;
-	            var completeNum = this.props.completeNum;
-	            var clearButton;
-	            count = count + Utils.pluralize(count, ' item');
-	            if (completeNum) {
-	                clearButton = React.createElement(
-	                    'button',
-	                    { className: 'clear-btn', onClick: this.props.onClear },
-	                    'Clear completed'
-	                );
-	            }
-	            return React.createElement(
-	                'section',
-	                { className: 'footer' },
-	                React.createElement(
-	                    'span',
-	                    { className: 'todo-count' },
-	                    count,
-	                    ' left'
-	                ),
-	                React.createElement(
-	                    'ul',
-	                    { className: 'filters' },
-	                    React.createElement(
-	                        'li',
-	                        { className: this.props.showing === 'all' ? 'selected' : '' },
-	                        React.createElement(
-	                            'a',
-	                            { href: '#/' },
-	                            'All'
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'li',
-	                        { className: this.props.showing === 'active' ? 'selected' : '' },
-	                        React.createElement(
-	                            'a',
-	                            { href: '#/active' },
-	                            'Active'
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'li',
-	                        { className: this.props.showing === 'completed' ? 'selected' : '' },
-	                        React.createElement(
-	                            'a',
-	                            { href: '#/completed' },
-	                            'Completed'
-	                        )
-	                    )
-	                ),
-	                clearButton
-	            );
-	        }
-
-	    });
-
-	    module.exports = Footer;
-	})();
-
-/***/ },
-
-/***/ 172:
-/***/ function(module, exports, __webpack_require__) {
-
-	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	//
 	// Generated on Tue Dec 16 2014 12:13:47 GMT+0100 (CET) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
@@ -461,7 +175,7 @@ webpackJsonp([0],{
 	    hash: dloc.hash,
 	    history: false,
 
-	    check: function () {
+	    check: function check() {
 	      var h = dloc.hash;
 	      if (h != this.hash) {
 	        this.hash = h;
@@ -469,7 +183,7 @@ webpackJsonp([0],{
 	      }
 	    },
 
-	    fire: function () {
+	    fire: function fire() {
 	      if (this.mode === 'modern') {
 	        this.history === true ? window.onpopstate() : window.onhashchange();
 	      } else {
@@ -477,7 +191,7 @@ webpackJsonp([0],{
 	      }
 	    },
 
-	    init: function (fn, history) {
+	    init: function init(fn, history) {
 	      var self = this;
 	      this.history = history;
 
@@ -538,7 +252,7 @@ webpackJsonp([0],{
 	      return this.mode;
 	    },
 
-	    destroy: function (fn) {
+	    destroy: function destroy(fn) {
 	      if (!Router || !Router.listeners) {
 	        return;
 	      }
@@ -552,7 +266,7 @@ webpackJsonp([0],{
 	      }
 	    },
 
-	    setHash: function (s) {
+	    setHash: function setHash(s) {
 	      // Mozilla always adds an entry to the history
 	      if (this.mode === 'legacy') {
 	        this.writeFrame(s);
@@ -569,7 +283,7 @@ webpackJsonp([0],{
 	      return this;
 	    },
 
-	    writeFrame: function (s) {
+	    writeFrame: function writeFrame(s) {
 	      // IE support...
 	      var f = document.getElementById('state-frame');
 	      var d = f.contentDocument || f.contentWindow.document;
@@ -578,7 +292,7 @@ webpackJsonp([0],{
 	      d.close();
 	    },
 
-	    syncHash: function () {
+	    syncHash: function syncHash() {
 	      // IE support...
 	      var s = this._hash;
 	      if (s != dloc.hash) {
@@ -587,7 +301,7 @@ webpackJsonp([0],{
 	      return this;
 	    },
 
-	    onHashChanged: function () {}
+	    onHashChanged: function onHashChanged() {}
 	  };
 
 	  var Router = exports.Router = function (routes) {
@@ -745,7 +459,7 @@ webpackJsonp([0],{
 	      iterator(arr[completed], function (err) {
 	        if (err || err === false) {
 	          callback(err);
-	          callback = function () {};
+	          callback = function callback() {};
 	        } else {
 	          completed += 1;
 	          if (completed === arr.length) {
@@ -935,31 +649,31 @@ webpackJsonp([0],{
 
 	  Router.prototype.invoke = function (fns, thisArg, callback) {
 	    var self = this;
-	    var apply;
+	    var _apply2;
 	    if (this.async) {
-	      apply = function (fn, next) {
+	      _apply2 = function apply(fn, next) {
 	        if (Array.isArray(fn)) {
-	          return _asyncEverySeries(fn, apply, next);
+	          return _asyncEverySeries(fn, _apply2, next);
 	        } else if (typeof fn == "function") {
 	          fn.apply(thisArg, (fns.captures || []).concat(next));
 	        }
 	      };
-	      _asyncEverySeries(fns, apply, function () {
+	      _asyncEverySeries(fns, _apply2, function () {
 	        if (callback) {
 	          callback.apply(thisArg, arguments);
 	        }
 	      });
 	    } else {
-	      apply = function (fn) {
+	      _apply2 = function _apply(fn) {
 	        if (Array.isArray(fn)) {
-	          return _every(fn, apply);
+	          return _every(fn, _apply2);
 	        } else if (typeof fn === "function") {
 	          return fn.apply(thisArg, fns.captures || []);
 	        } else if (typeof fn === "string" && self.resource) {
 	          self.resource[fn].apply(thisArg, fns.captures || []);
 	        }
 	      };
-	      _every(fns, apply);
+	      _every(fns, _apply2);
 	    }
 	  };
 
@@ -1010,7 +724,7 @@ webpackJsonp([0],{
 	      return filterRoutes(next);
 	    }
 	    for (var r in routes) {
-	      if (routes.hasOwnProperty(r) && (!this._methods[r] || this._methods[r] && typeof routes[r] === "object" && !Array.isArray(routes[r]))) {
+	      if (routes.hasOwnProperty(r) && (!this._methods[r] || this._methods[r] && _typeof(routes[r]) === "object" && !Array.isArray(routes[r]))) {
 	        current = exact = regexp + this.delimiter + r;
 	        if (!this.strict) {
 	          exact += "[" + this.delimiter + "]?";
@@ -1068,7 +782,7 @@ webpackJsonp([0],{
 	      return this.insert(method, path, route, parent[part]);
 	    }
 	    if (!part && !path.length && parent === this.routes) {
-	      methodType = typeof parent[method];
+	      methodType = _typeof(parent[method]);
 	      switch (methodType) {
 	        case "function":
 	          parent[method] = [parent[method], route];
@@ -1082,10 +796,10 @@ webpackJsonp([0],{
 	      }
 	      return;
 	    }
-	    parentType = typeof parent[part];
+	    parentType = _typeof(parent[part]);
 	    isArray = Array.isArray(parent[part]);
 	    if (parent[part] && !isArray && parentType == "object") {
-	      methodType = typeof parent[part][method];
+	      methodType = _typeof(parent[part][method]);
 	      switch (methodType) {
 	        case "function":
 	          parent[part][method] = [parent[part][method], route];
@@ -1133,7 +847,7 @@ webpackJsonp([0],{
 	  };
 
 	  Router.prototype.mount = function (routes, path) {
-	    if (!routes || typeof routes !== "object" || Array.isArray(routes)) {
+	    if (!routes || (typeof routes === 'undefined' ? 'undefined' : _typeof(routes)) !== "object" || Array.isArray(routes)) {
 	      return;
 	    }
 	    var self = this;
@@ -1144,7 +858,7 @@ webpackJsonp([0],{
 	    function insertOrMount(route, local) {
 	      var rename = route,
 	          parts = route.split(self.delimiter),
-	          routeType = typeof routes[route],
+	          routeType = _typeof(routes[route]),
 	          isRoute = parts[0] === "" || !self._methods[parts[0]],
 	          event = isRoute ? "on" : rename;
 	      if (isRoute) {
@@ -1168,7 +882,303 @@ webpackJsonp([0],{
 	      }
 	    }
 	  };
-	})( true ? exports : window);
+	})(( false ? 'undefined' : _typeof(exports)) === "object" ? exports : window);
+
+/***/ },
+
+/***/ 169:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/*
+	 * @Author: d12mnit
+	 * @Date:   2016-05-11 16:10:48
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-13T13:29:51+08:00
+	 */
+	(function () {
+	    'use strict';
+
+	    var Utils = __webpack_require__(170);
+
+	    var TodoModel = function TodoModel(key) {
+	        this.key = key;
+	        this.todos = Utils.store(key);
+	        this.onChange = [];
+	    };
+	    TodoModel.prototype.subscribe = function (f) {
+	        this.onChange.push(f);
+	    };
+	    TodoModel.prototype.save = function () {
+	        Utils.store(this.key, this.todos);
+	        this.onChange.forEach(function (f) {
+	            f();
+	        });
+	    };
+	    TodoModel.prototype.addTodo = function (title) {
+	        this.todos = this.todos.concat({
+	            id: Utils.randomId(),
+	            title: title,
+	            isComplete: false
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.toggleAll = function (checked) {
+	        this.todos = this.todos.map(function (todo) {
+	            return Utils.extends({}, todo, { isComplete: checked });
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.toggle = function (item) {
+	        this.todos = this.todos.map(function (todo) {
+	            return todo !== item ? todo : Utils.extends({}, todo, { isComplete: !todo.isComplete });
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.destroy = function (item) {
+	        this.todos = this.todos.filter(function (todo) {
+	            return todo !== item;
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.update = function (item, text) {
+	        this.todos = this.todos.map(function (todo) {
+	            return todo !== item ? todo : Utils.extends({}, todo, { title: text });
+	        });
+	        this.save();
+	    };
+	    TodoModel.prototype.clear = function () {
+	        this.todos = this.todos.filter(function (todo) {
+	            return !todo.isComplete;
+	        });
+	        this.save();
+	    };
+	    module.exports = TodoModel;
+	})();
+
+/***/ },
+
+/***/ 170:
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/*
+	 * @Author: d12mnit
+	 * @Date:   2016-05-11 15:37:27
+	 * @Last Modified by:   d12mnit
+	 * @Last Modified time: 2016-05-11 19:56:43
+	 */
+	(function () {
+	    'use strict';
+
+	    var Utils = {
+	        randomId: function randomId() {
+	            var random;
+	            var id = '';
+
+	            for (var i = 0; i < 32; i++) {
+	                random = Math.random() * 16 | 0;
+	                if (i === 8 || i === 12 || i === 16 || i === 20) {
+	                    id += '-';
+	                }
+	                id += (i === 12 ? 4 : i === 16 ? random & 3 | 8 : random).toString(16);
+	            }
+	            return id;
+	        },
+	        pluralize: function pluralize(count, word) {
+	            return count === 1 ? word : word + 's';
+	        },
+	        store: function store(key, value) {
+	            if (value) {
+	                return localStorage.setItem(key, JSON.stringify(value));
+	            }
+	            var store = localStorage.getItem(key);
+	            return store && JSON.parse(store) || [];
+	        },
+	        extends: function _extends() {
+	            var newObj = {};
+	            for (var i = 0; i < arguments.length; i++) {
+	                var obj = arguments[i];
+	                for (var key in obj) {
+	                    if (obj.hasOwnProperty(key)) {
+	                        newObj[key] = obj[key];
+	                    }
+	                }
+	            }
+	            return newObj;
+	        }
+	    };
+	    module.exports = Utils;
+	})();
+
+/***/ },
+
+/***/ 171:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/*
+	* @Author: d12mnit
+	* @Date:   2016-05-12 20:57:11
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-13T11:53:29+08:00
+	*/
+	(function () {
+	    'use strict';
+
+	    var React = __webpack_require__(1);
+	    var ReactDOM = __webpack_require__(33);
+
+	    var ESCAPE_KEY = 27;
+	    var ENTER_KEY = 13;
+
+	    var TodoItem = React.createClass({
+	        displayName: 'TodoItem',
+
+	        getInitialState: function getInitialState() {
+	            return { editText: this.props.todo.title };
+	        },
+	        handleEdit: function handleEdit(event) {
+	            this.props.onEdit();
+	            this.setState({ editText: this.props.todo.title });
+	        },
+	        handleChange: function handleChange(event) {
+	            if (this.props.editing) {
+	                this.setState({ editText: event.target.value });
+	            }
+	        },
+	        handleKeyDown: function handleKeyDown(event) {
+	            if (event.keyCode === ESCAPE_KEY) {
+	                this.setState({ editText: this.props.todo.title });
+	                this.props.onCancel(event);
+	            } else if (event.keyCode === ENTER_KEY) {
+	                this.handleSubmit(event);
+	            }
+	        },
+	        handleSubmit: function handleSubmit() {
+	            var val = this.state.editText.trim();
+	            if (val) {
+	                this.props.onSave(val);
+	            } else {
+	                this.props.onDestroy();
+	            }
+	        },
+	        componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	            if (!prevProps.editing && this.props.editing) {
+	                var node = ReactDOM.findDOMNode(this.refs.editbar);
+	                node.focus();
+	                node.setSelectionRange(node.value.length, node.value.length);
+	            }
+	        },
+	        render: function render() {
+	            return React.createElement(
+	                'li',
+	                { className: this.props.editing ? "editing" : "" },
+	                React.createElement(
+	                    'div',
+	                    { className: 'view' },
+	                    React.createElement('input', { className: 'toggle', type: 'checkbox', checked: this.props.todo.isComplete, onChange: this.props.onToggle }),
+	                    React.createElement(
+	                        'label',
+	                        { onDoubleClick: this.handleEdit },
+	                        this.props.todo.title
+	                    ),
+	                    React.createElement('button', { className: 'destroy', onClick: this.props.onDestroy })
+	                ),
+	                React.createElement('input', { ref: 'editbar', className: 'edit', type: 'text', value: this.state.editText, onChange: this.handleChange, onBlur: this.handleSubmit, onKeyDown: this.handleKeyDown })
+	            );
+	        }
+	    });
+
+	    module.exports = TodoItem;
+	})();
+
+/***/ },
+
+/***/ 172:
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/*
+	* @Author: d12mnit
+	* @Date:   2016-05-12 20:56:46
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-13T13:34:06+08:00
+	*/
+	(function () {
+	    'use strict';
+
+	    var React = __webpack_require__(1);
+	    var ReactDOM = __webpack_require__(33);
+	    var Utils = __webpack_require__(170);
+	    var Footer = React.createClass({
+	        displayName: 'Footer',
+
+
+	        render: function render() {
+	            var count = this.props.count;
+	            var completeNum = this.props.completeNum;
+	            var clearButton;
+	            count = count + Utils.pluralize(count, ' item');
+	            if (completeNum) {
+	                clearButton = React.createElement(
+	                    'button',
+	                    { className: 'clear-btn', onClick: this.props.onClear },
+	                    'Clear completed'
+	                );
+	            }
+	            return React.createElement(
+	                'section',
+	                { className: 'footer' },
+	                React.createElement(
+	                    'span',
+	                    { className: 'todo-count' },
+	                    count,
+	                    ' left'
+	                ),
+	                React.createElement(
+	                    'ul',
+	                    { className: 'filters' },
+	                    React.createElement(
+	                        'li',
+	                        { className: this.props.showing === 'all' ? 'selected' : '' },
+	                        React.createElement(
+	                            'a',
+	                            { href: '#/' },
+	                            'All'
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'li',
+	                        { className: this.props.showing === 'active' ? 'selected' : '' },
+	                        React.createElement(
+	                            'a',
+	                            { href: '#/active' },
+	                            'Active'
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'li',
+	                        { className: this.props.showing === 'completed' ? 'selected' : '' },
+	                        React.createElement(
+	                            'a',
+	                            { href: '#/completed' },
+	                            'Completed'
+	                        )
+	                    )
+	                ),
+	                clearButton
+	            );
+	        }
+
+	    });
+
+	    module.exports = Footer;
+	})();
 
 /***/ }
 

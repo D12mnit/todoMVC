@@ -1,13 +1,14 @@
 var webpack = require('webpack');
-
+var path = require('path');
 module.exports = {
     entry: {
         app: './src/js/app.js',
         vender: ['react', 'react-dom']
     },
     output: {
-        path: './dist',
-        filename: '[name].js'
+        path: path.resolve(__dirname,"dist"),
+        filename: '[name].js',
+        publicPath: '/dist/'
     },
     module: {
         loaders: [{

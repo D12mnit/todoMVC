@@ -5,11 +5,12 @@
 * @Last modified time: 2016-05-13T13:27:22+08:00
  */
 'use strict';
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Router = require('director').Router;
 
-var ALL_TODOS = 'all',
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router } from 'director';
+
+const ALL_TODOS = 'all',
     ACTIVE_TODOS = 'active',
     COMPLETED_TODOS = 'completed';
 
