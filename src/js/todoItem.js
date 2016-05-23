@@ -6,8 +6,6 @@
 */
 (function() {
     'use strict';
-    var React = require('react');
-    var ReactDOM = require('react-dom');
 
     var ESCAPE_KEY = 27;
     var ENTER_KEY = 13;

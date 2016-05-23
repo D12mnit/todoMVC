@@ -6,8 +6,6 @@
 */
 (function() {
     'use strict';
-    var React = require('react');
-    var ReactDOM = require('react-dom');
     var Utils = require('./utils');
     var Footer = React.createClass({
 

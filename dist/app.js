@@ -3,7 +3,7 @@ webpackJsonp([0],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
+	/* WEBPACK VAR INJECTION */(function(React, ReactDOM) {/*
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 14:00:32
 	* @Last modified by:   d12mnit
@@ -11,9 +11,7 @@ webpackJsonp([0],{
 	 */
 	'use strict';
 
-	var React = __webpack_require__(1);
-	var ReactDOM = __webpack_require__(33);
-	var Router = __webpack_require__(168).Router;
+	var _director = __webpack_require__(168);
 
 	var ALL_TODOS = 'all',
 	    ACTIVE_TODOS = 'active',
@@ -68,7 +66,7 @@ webpackJsonp([0],{
 	    },
 	    componentDidMount: function componentDidMount() {
 	        var setState = this.setState;
-	        var router = Router({
+	        var router = (0, _director.Router)({
 	            '/': setState.bind(this, { nowShowing: ALL_TODOS }),
 	            '/active': setState.bind(this, { nowShowing: ACTIVE_TODOS }),
 	            '/completed': setState.bind(this, { nowShowing: COMPLETED_TODOS })
@@ -137,6 +135,7 @@ webpackJsonp([0],{
 	}
 	todos.subscribe(render);
 	render();
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(33)))
 
 /***/ },
 
@@ -967,8 +966,8 @@ webpackJsonp([0],{
 	/*
 	 * @Author: d12mnit
 	 * @Date:   2016-05-11 15:37:27
-	 * @Last Modified by:   d12mnit
-	 * @Last Modified time: 2016-05-11 19:56:43
+	* @Last modified by:   d12mnit
+	* @Last modified time: 2016-05-17T21:55:50+08:00
 	 */
 	(function () {
 	    'use strict';
@@ -1018,7 +1017,7 @@ webpackJsonp([0],{
 /***/ 171:
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(React, ReactDOM) {"use strict";
 
 	/*
 	* @Author: d12mnit
@@ -1029,14 +1028,11 @@ webpackJsonp([0],{
 	(function () {
 	    'use strict';
 
-	    var React = __webpack_require__(1);
-	    var ReactDOM = __webpack_require__(33);
-
 	    var ESCAPE_KEY = 27;
 	    var ENTER_KEY = 13;
 
 	    var TodoItem = React.createClass({
-	        displayName: 'TodoItem',
+	        displayName: "TodoItem",
 
 	        getInitialState: function getInitialState() {
 	            return { editText: this.props.todo.title };
@@ -1075,33 +1071,34 @@ webpackJsonp([0],{
 	        },
 	        render: function render() {
 	            return React.createElement(
-	                'li',
+	                "li",
 	                { className: this.props.editing ? "editing" : "" },
 	                React.createElement(
-	                    'div',
-	                    { className: 'view' },
-	                    React.createElement('input', { className: 'toggle', type: 'checkbox', checked: this.props.todo.isComplete, onChange: this.props.onToggle }),
+	                    "div",
+	                    { className: "view" },
+	                    React.createElement("input", { className: "toggle", type: "checkbox", checked: this.props.todo.isComplete, onChange: this.props.onToggle }),
 	                    React.createElement(
-	                        'label',
+	                        "label",
 	                        { onDoubleClick: this.handleEdit },
 	                        this.props.todo.title
 	                    ),
-	                    React.createElement('button', { className: 'destroy', onClick: this.props.onDestroy })
+	                    React.createElement("button", { className: "destroy", onClick: this.props.onDestroy })
 	                ),
-	                React.createElement('input', { ref: 'editbar', className: 'edit', type: 'text', value: this.state.editText, onChange: this.handleChange, onBlur: this.handleSubmit, onKeyDown: this.handleKeyDown })
+	                React.createElement("input", { ref: "editbar", className: "edit", type: "text", value: this.state.editText, onChange: this.handleChange, onBlur: this.handleSubmit, onKeyDown: this.handleKeyDown })
 	            );
 	        }
 	    });
 
 	    module.exports = TodoItem;
 	})();
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(33)))
 
 /***/ },
 
 /***/ 172:
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(React) {'use strict';
 
 	/*
 	* @Author: d12mnit
@@ -1112,8 +1109,6 @@ webpackJsonp([0],{
 	(function () {
 	    'use strict';
 
-	    var React = __webpack_require__(1);
-	    var ReactDOM = __webpack_require__(33);
 	    var Utils = __webpack_require__(170);
 	    var Footer = React.createClass({
 	        displayName: 'Footer',
@@ -1179,6 +1174,7 @@ webpackJsonp([0],{
 
 	    module.exports = Footer;
 	})();
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }
 

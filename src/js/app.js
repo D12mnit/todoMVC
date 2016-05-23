@@ -6,8 +6,6 @@
  */
 'use strict';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { Router } from 'director';
 
 const ALL_TODOS = 'all',

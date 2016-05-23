@@ -17,6 +17,10 @@ module.exports = {
         }]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin('vender','vender.js')
+        new webpack.optimize.CommonsChunkPlugin('vender','vender.js'),
+        new webpack.ProvidePlugin({
+            React: 'react',
+            ReactDOM: 'react-dom'
+        })
     ]
 }
